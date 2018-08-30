@@ -49,3 +49,6 @@ class Segment(object):
 
         first, second = Segment._sorted_pair_by_start(self, other)
         return Segment(second.start, first.end)
+
+    def size(self):
+        return self.end - self.start
