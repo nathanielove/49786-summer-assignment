@@ -2,7 +2,7 @@
 
 | Title |  49786 Summer Assignment | 
 | --- | --- | 
-| **Author** | **Nathanil SUN**
+| **Author** | **Nathaniel SUN**
 | **Date** | **Aug 30 2018**
 
 ## Quickstart
