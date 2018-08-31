@@ -53,6 +53,14 @@ def solve_by_brute_force(segments):
     return m
 
 
+def find_redundancy(segments):
+    for i in range(len(segments) - 2):
+        if segments[i].overlaps(segments[i + 2]):
+            return True
+
+    return False
+
+
 def generate_increments(segments):
     coverages = [segments[0].size(), add(segments[0], segments[1], segments[0].size())]
     for i in range(2, len(segments)):
@@ -68,9 +76,18 @@ def solve_by_dp(segments):
         return 0 if len(segments) < 2 else reduced[0].size()
 
     if len(reduced) == 2:
-        return max(reduced, key=lambda x: x.size()).size()
+        if len(segments) == 2:
+            return max(reduced, key=lambda x: x.size()).size()
+        else:
+            return add(reduced[0], reduced[1], reduced[0].size())
+
+    redundant = find_redundancy(reduced)
 
     forward = generate_increments(reduced)
+
+    if redundant:
+        return forward[-1]
+
     backward = generate_increments(list(reversed(reduced)))
     backward.reverse()
 
@@ -78,8 +95,6 @@ def solve_by_dp(segments):
 
     for i in range(1, len(reduced) - 1):
         current = forward[i - 1] + backward[i + 1]
-        if segments[i - 1].overlaps(segments[i + 1]):
-            current -= segments[i - 1].intersection(segments[i + 1]).size()
         m = max(m, current)
 
     return m

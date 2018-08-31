@@ -62,33 +62,59 @@ In addition to `hash` and `equals`, it provides several useful functions:
 | --- | --- | 
 | `size()` | Returns the size of the segment
 | `covers(other)` | Tells if the current segment covers another segment
-| `overlaps(other)` | Tells if the current segment overlaps another segment
+| `overlaps(other)` | Tells if the current segment overlaps with another segment
 | `intersection(other)` | Return the intersection segment of the current and another segment 
 
 ### The `FileEngine` Class
 
-Each `FileEngine` object is in charge of a single input file. 
+Each `FileEngine` object is in charge of a **pair** of input/output files. 
 
-An object can be created by a call to the constructor: `FileEngine(file_id)`, and it provides two functions:
+An instance can be created by `FileEngine(file_id)`, and it provides two functions:
 
 | Function | Description | 
 | --- | --- | 
 | `read()` | Read the raw input file and return a list of `Segment` objects
-| `write()` | Write an integer to the output file
+| `write(int)` | Write an integer to the output file
 
 ## Algorithm
 
-### Sorting
+### Pre-processing
+
+#### Sort
 
 First, we sort the `Segment`s array according to their start time. This can be achieved in $O(n log(n))$ time.
 
-### Remove Sub-segments
+#### Remove Sub-segments
 
 Then, for each `Segment` object in the sorted array, we remove all following segments that it covers. This can be achieved in $O(n)$ time.
 
+#### Find Redundancy
+
+If there exists an `segments[i]` such that `segments[i-1]` overlaps with `segments[i+1]`, we call `segments[i]` "redundant", because the overall coverage will NOT be affected after it is removed. 
+
+If a redundant segment is found, we simply calculate and return the coverage of the remaining segments.
+
+### Properties of Segment Array
+
+After handling the special cases above, now we have a sorted segment array with some special properties. 
+
+Consider any three consecutive segments in the array, `segments[i-1]`, `segments[i]` and `segments[i+1]`, the following conditions can be ensured:
+
+| Condition | Explanation | 
+| --- | --- | 
+| `segments[i-1].start <= segments[i].start <= segments[i+1].start` | Sorted
+| `segments[i-1].end < segments[i].end < segments[i+1].end` | NO sub-segments
+| `segments[i-1].end < segments[i+1].start` | NO redundancy (in other words, `segments[i-1]` and `segments[i+1]` are disjoint)
+
+
+Now that we have the special properties above, the coverage of remaining segments after removing a `segments[i]` can be calculated by an addition of:
+
+* Total coverage from `segments[0]` to `segments[i-1]`
+* Total coverage from `segments[i+1]` to `segments[-1]`
+
 ### Two-pass DP
 
-The core algorithms follows a two-pass dynamic programming approach, once forward and another backward.
+The core algorithm uses a two-pass dynamic programming technique, once forward and another backward.
 
 First, we create an array called `forward`. The first element in this array should be the `size()` of the first segment.
 
@@ -98,9 +124,9 @@ Then, from the second segment, for each `segments[i]`, we compute the combined t
 * `segments[i]`
 * `forward[i-1]`
 
-If `segments[i-1]` and `segment[i]` does NOT overlap, the current total coverage `forward[i]` can be calculated by `forward[i-1] + segments[i].size()`.
+If `segments[i-1]` and `segments[i]` does NOT overlap, the current total coverage `forward[i]` can be calculated by `forward[i-1] + segments[i].size()`.
 
-Otherwise, we need to calculate the `intersection` by calling `segment[i].intersection(segment[i-1])`, and then `forward[i] = forward[i-1] + segment[i].size() + intersection.size()`
+Otherwise, we need to calculate the `intersection` by calling `segments[i].intersection(segments[i-1])`, and then `forward[i] = forward[i-1] + segments[i].size() + intersection.size()`
 
 After we fill up the `forward` array, we reverse the segments array and do the same, in order to generate the `backward` array. 
 
