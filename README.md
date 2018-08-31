@@ -100,7 +100,7 @@ Then, from the second segment, for each `segments[i]`, we compute the combined t
 
 If `segments[i-1]` and `segment[i]` does NOT overlap, the current total coverage `forward[i]` can be calculated by `forward[i-1] + segments[i].size()`.
 
-Otherwise, we need to calculate the `intersection` by calling `segment[i].intersection(segment[i-1])`, and then `forward[i] = forward[i-1] + intersection.size()`
+Otherwise, we need to calculate the `intersection` by calling `segment[i].intersection(segment[i-1])`, and then `forward[i] = forward[i-1] + segment[i].size() + intersection.size()`
 
 After we fill up the `forward` array, we reverse the segments array and do the same, in order to generate the `backward` array. 
 

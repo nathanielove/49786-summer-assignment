@@ -41,10 +41,14 @@ def solve_by_brute_force(segments):
 
     checkpoints = set([int(x / 100 * len(segments)) for x in range(1, 101)])
 
+    print('Total: {l}'.format(l=len(segments)))
+
     for i in range(len(segments)):
-        m = max(m, brute_force_merge(segments[:i] + segments[i + 1:]))
+        current = brute_force_merge(segments[:i] + segments[i + 1:])
+        print(i, current, m)
+        m = max(m, current)
         if i in checkpoints:
-            print('Completed: {p}%'.format(p=int(i * 100 / len(segments))))
+            print('Completed: {p}%'.format(p=int(i * 100 / len(segments)) + 1))
 
     return m
 
@@ -73,6 +77,9 @@ def solve_by_dp(segments):
     m = max(forward[-2], backward[1])
 
     for i in range(1, len(reduced) - 1):
-        m = max(m, forward[i - 1] + backward[i + 1])
+        current = forward[i - 1] + backward[i + 1]
+        if segments[i - 1].overlaps(segments[i + 1]):
+            current -= segments[i - 1].intersection(segments[i + 1]).size()
+        m = max(m, current)
 
     return m

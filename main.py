@@ -1,4 +1,4 @@
-from solution.algorithm import solve_by_dp
+from solution.algorithm import solve_by_dp, solve_by_brute_force
 from solution.files import FileEngine, TEST_RANGE
 
 
