@@ -118,27 +118,31 @@ If a redundant segment is found, we simply calculate and return the coverage of 
 
 ### Properties of Segment Array
 
-After handling the special cases above, now we have a sorted segment array with some special properties. 
+After pre-processing, we have a segment array with some special properties. 
 
-Consider any three consecutive segments in the array, `segments[i-1]`, `segments[i]` and `segments[i+1]`, the following conditions can be ensured:
+Consider any three consecutive segments in the array, `segments[i-1]`, `segments[i]` and `segments[i+1]`, the following properties can be ensured:
 
-| Condition | Explanation | 
+| Property | Explanation | 
 | --- | --- | 
 | `segments[i-1].start <= segments[i].start <= segments[i+1].start` | Sorted
 | `segments[i-1].end < segments[i].end < segments[i+1].end` | NO sub-segments
 | `segments[i-1].end < segments[i+1].start` | NO redundancy (in other words, `segments[i-1]` and `segments[i+1]` are disjoint)
 
 
-Now that we have the special properties above, the coverage of remaining segments after removing a `segments[i]` can be calculated by an addition of:
+With such properties, the coverage of remaining segments after removing a `segments[i]` can be calculated by an addition of:
 
 * Total coverage from `segments[0]` to `segments[i-1]`
 * Total coverage from `segments[i+1]` to `segments[-1]`
 
 ### Two-pass DP
 
-The core algorithm uses a two-pass dynamic programming technique, once forward and another backward.
+The core algorithm uses a two-pass dynamic programming technique, once forward and another backward. 
 
-First, we create an array called `forward`. The first element in this array should be the `size()` of the first segment.
+There are two arrays: `forward` and `backward`.
+
+`forward[i]` stores the total coverage from `segments[0]` to `segments[i]`, and `backward[i]` stores the total coverage from `segments[i]` to `segments[-1]` (both ends included).
+
+Hence, the first element in `forward` should be the `size()` of the first segment.
 
 Then, from the second segment, for each `segments[i]`, we compute the combined total coverage up until that element, `forward[i]`, using three values we already have:
 
@@ -150,7 +154,7 @@ If `segments[i-1]` and `segments[i]` does NOT overlap, the current total coverag
 
 Otherwise, we need to calculate the `intersection` by calling `segments[i].intersection(segments[i-1])`, and then `forward[i] = forward[i-1] + segments[i].size() + intersection.size()`
 
-After we fill up the `forward` array, we reverse the segments array and do the same, in order to generate the `backward` array. 
+After we fill up the `forward` array, we do the same in the reverse order to generate the `backward` array. 
 
 Once we have both the `forward` and `backward` arrays, finding the maximum coverage is super easy. For any element in between (not the first/last), the total coverage without it is simply `forward[i-1] + backward[i+1]`.
 
