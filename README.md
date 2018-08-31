@@ -106,4 +106,4 @@ After we fill up the `forward` array, we reverse the segments array and do the s
 
 Once we have both the `forward` and `backward` arrays, finding the maximum coverage is super easy. For any element in between (not the first/last), the total coverage without it is simply `forward[i-1] + backward[i+1]`.
 
-Finally, we compare all coverages above and `forward[1]`, `backward[-2]` to get the maximum. 
+Finally, we compare all coverages above and `forward[-2]`, `backward[1]` to get the maximum. 
