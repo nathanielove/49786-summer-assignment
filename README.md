@@ -1,9 +1,31 @@
 # 49786 Summer Assignment
 
-| Title |  49786 Summer Assignment | 
-| --- | --- | 
-| **Author** | **Nathaniel SUN**
-| **Date** | **Aug 30 2018**
+> **Author**: Nathaniel SUN
+>
+> **Date**: Aug 30 2018
+
+## Problem Description
+
+Given a total of N elements, find the largest coverage we can get after removing one segment.
+
+Example: 
+
+> **Input**: [[5,9], [1,4], [3,7]]
+>
+> **Output**: 7
+>
+> **Explanation**: By removing [3,7], the remaining segments covers a total length of 7
+
+Input format: the first line contains the length of the array; all following lines are the start and end of segments.
+
+The example above corresponds to:
+
+```
+3
+5 9
+1 4
+3 7
+```
 
 ## Quickstart
 
